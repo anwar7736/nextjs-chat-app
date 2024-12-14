@@ -14,9 +14,9 @@ const Home = () => {
         <div className="w-3/4">
           <header className="bg-white p-4 text-gray-700 flex justify-between">
             <div className="text-xl font-semibold cursor-pointer">
-              <span className="ml-1">John Doe</span> 
-              <sup className="p-1 bg-green-500 ml-1 rounded" style={{ fontSize: '0px' }}></sup> 
-              </div>
+              <span className="ml-1">John Doe</span>
+              <sup className="p-1 bg-green-500 ml-1 rounded" style={{ fontSize: '0px' }}></sup>
+            </div>
             <div className="flex justify-end px-2">
               <div className="px-3 cursor-pointer">
                 <MdAddIcCall title="voice call" />
@@ -24,6 +24,7 @@ const Home = () => {
               <div className="px-3 cursor-pointer">
                 <FaVideo title="video call" />
               </div>
+
             </div>
           </header>
           <Messages messages={messages} />
