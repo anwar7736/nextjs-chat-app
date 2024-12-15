@@ -1,18 +1,42 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Users from './Users'
 import { IoMdArrowDropdown } from "react-icons/io";
+import { auth } from '../helpers/helper';
+import { deleteCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
+import { MdAdd, MdPlusOne } from 'react-icons/md';
 
-const Sidebar = ({ users }) => {
+const Sidebar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const router = useRouter();
+    const [user, setUser] = useState('');
+    const [users, setUsers] = useState([]);
+    const [search, setSearch] = useState('');
+    const getUserList = async () => {
+      let res = await fetch(`/api/v1/users?search=${search}`);
+          res = await res.json();
+      if(res.success)
+      {
+        setUsers(res.data);
+      }
+    }
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
+    const logout = () => {
+        deleteCookie('auth');
+        router.push('/auth');
+    }
+    useEffect(()=>{
+        setUser(auth());
+        getUserList();
+    }, [search]);
     return (
 
         <div className="w-1/4 bg-white border-r border-gray-300">
             <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
-                <h1 className="text-2xl font-semibold">Md Anwar Hossain</h1>
+                <h1 className="text-2xl font-semibold">{ user?.name }</h1>
                 <div className="px-3 cursor-pointer" onClick={toggleDropdown}>
                     <IoMdArrowDropdown title="More" id="dropdownDefaultButton" />
                 </div>
@@ -23,13 +47,17 @@ const Sidebar = ({ users }) => {
                             <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile</a>
                         </li>
                         <li>
-                            <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</a>
+                            <button onClick={()=> logout()} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</button>
                         </li>
                     </ul>
                 </div>
             </header>
 
             <div className="overflow-y-auto h-screen p-3 mb-9 pb-20">
+           <div className="flex justify-between">
+            <input type="text" className="w-50 p-1 rounded-md border border-green-400 focus:outline-none focus:border-blue-500 mb-3" placeholder="Search user..." onChange={(e) => setSearch(e.target.value)}/>
+            <button className="w-50" title="Create group"><MdAdd></MdAdd></button>
+           </div>
                 <Users users={users} />
             </div>
         </div>

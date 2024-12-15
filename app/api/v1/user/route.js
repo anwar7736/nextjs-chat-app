@@ -2,6 +2,7 @@ import { mongoDB_connect } from "@/app/helpers/helper";
 import { userSchema } from "@/app/models/userModel";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 
 mongoDB_connect();
 export async function POST(request)

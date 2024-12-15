@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from 'react';
 import Messages from './components/Messages';
 import Sidebar from './components/Sidebar'
 import { FaVideo } from "react-icons/fa";
@@ -6,11 +7,10 @@ import { MdAddIcCall } from "react-icons/md";
 
 const Home = () => {
   const messages = [{ id: 1, message: 'Hello how are you?' }];
-  const users = [{ id: 1, name: 'Jon Doe', message: 'Test message' }, { id: 2, name: 'Jane Doe', message: 'Test message' }];
   return (
     <div className="px-7 h-screen overflow-hidden flex items-center justify-center bg-[#edf2f7]">
       <div className="flex h-screen overflow-hidden w-full ">
-        <Sidebar users={users} />
+        <Sidebar/>
         <div className="w-3/4">
           <header className="bg-white p-4 text-gray-700 flex justify-between">
             <div className="text-xl font-semibold cursor-pointer">
@@ -28,7 +28,6 @@ const Home = () => {
             </div>
           </header>
           <Messages messages={messages} />
-
           <footer className="bg-white border-t border-gray-300 p-4 absolute bottom-0 w-3/4">
             <div className="flex items-center gap-x-2">
               <input type="text" placeholder="Type a message..." className="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500" />
