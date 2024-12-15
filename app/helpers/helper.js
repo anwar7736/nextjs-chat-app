@@ -30,3 +30,18 @@ export const dateFormat = (date) =>
     }
     else return "";
 }
+
+export const dateTimeFormat = (date) =>
+{
+    if(date)
+    {
+        return new Date(date).toLocaleDateString("en-US", { 
+            year: "numeric", 
+            month: "short", 
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          });
+    }
+    else return "";
+}

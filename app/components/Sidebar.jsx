@@ -4,7 +4,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { auth } from '../helpers/helper';
 import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
-import { MdAdd, MdPlusOne } from 'react-icons/md';
+import { MdAdd } from 'react-icons/md';
 
 const Sidebar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -13,7 +13,7 @@ const Sidebar = () => {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState('');
     const getUserList = async () => {
-      let res = await fetch(`/api/v1/users?search=${search}`);
+      let res = await fetch(`/api/v1/users?auth_id=${auth()?._id}&search=${search}`);
           res = await res.json();
       if(res.success)
       {

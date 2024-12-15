@@ -3,6 +3,7 @@ import "./globals.css";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import UserContextProvider from "./contexts/UserContext";
+import MessageContextProvider from "./contexts/MessageContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,8 +27,10 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <UserContextProvider>
-        {children}
-        <ToastContainer />
+          <MessageContextProvider>
+            {children}
+            <ToastContainer />
+          </MessageContextProvider>
         </UserContextProvider>
       </body>
     </html>
