@@ -1,12 +1,14 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Messages from './components/Messages';
 import Sidebar from './components/Sidebar'
 import { FaVideo } from "react-icons/fa";
 import { MdAddIcCall } from "react-icons/md";
+import { UserContext } from './contexts/UserContext';
 
 const Home = () => {
   const messages = [{ id: 1, message: 'Hello how are you?' }];
+  const {user, setUser} = useContext(UserContext);
   return (
     <div className="px-7 h-screen overflow-hidden flex items-center justify-center bg-[#edf2f7]">
       <div className="flex h-screen overflow-hidden w-full ">
@@ -14,7 +16,7 @@ const Home = () => {
         <div className="w-3/4">
           <header className="bg-white p-4 text-gray-700 flex justify-between">
             <div className="text-xl font-semibold cursor-pointer">
-              <span className="ml-1">John Doe</span>
+              <span className="ml-1">{user?.name}</span>
               <sup className="p-1 bg-green-500 ml-1 rounded" style={{ fontSize: '0px' }}></sup>
             </div>
             <div className="flex justify-end px-2">
