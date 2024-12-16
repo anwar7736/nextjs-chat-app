@@ -16,9 +16,11 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     console.log('a new user connected!');
 
-    socket.emit('server-message', 'Message send from server');
-    socket.on('client-message', (data) => {
-        console.log(data);
+    socket.on('send-message', (data) => {
+        //for sender
+        socket.emit('receive-message', data);
+        //for receiver
+        socket.broadcast.emit('receive-message', data);
       });
 
     socket.on('disconnect', () => {

@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import UserContextProvider from "./contexts/UserContext";
 import MessageContextProvider from "./contexts/MessageContext";
@@ -26,12 +26,12 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <UserContextProvider>
-          <MessageContextProvider>
-            {children}
-            <ToastContainer />
-          </MessageContextProvider>
-        </UserContextProvider>
+          <UserContextProvider>
+            <MessageContextProvider>
+              {children}
+              <ToastContainer />
+            </MessageContextProvider>
+          </UserContextProvider>
       </body>
     </html>
   );

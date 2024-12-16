@@ -6,20 +6,10 @@ import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { MdAdd } from 'react-icons/md';
 
-const Sidebar = () => {
+const Sidebar = ({users, search, setSearch}) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const router = useRouter();
     const [user, setUser] = useState('');
-    const [users, setUsers] = useState([]);
-    const [search, setSearch] = useState('');
-    const getUserList = async () => {
-      let res = await fetch(`/api/v1/users?auth_id=${auth()?._id}&search=${search}`);
-          res = await res.json();
-      if(res.success)
-      {
-        setUsers(res.data);
-      }
-    }
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -30,8 +20,7 @@ const Sidebar = () => {
     }
     useEffect(()=>{
         setUser(auth());
-        getUserList();
-    }, [search]);
+    }, []);
     return (
 
         <div className="w-1/4 bg-white border-r border-gray-300">
@@ -55,7 +44,7 @@ const Sidebar = () => {
 
             <div className="overflow-y-auto h-screen p-3 mb-9 pb-20">
            <div className="flex justify-between">
-            <input type="text" className="w-50 p-1 rounded-md border border-green-400 focus:outline-none focus:border-blue-500 mb-3" placeholder="Search user..." onChange={(e) => setSearch(e.target.value)}/>
+            <input type="text" className="w-50 p-1 rounded-md border border-green-400 focus:outline-none focus:border-blue-500 mb-3" placeholder="Search user..." onChange={(e) => setSearch(e.target.value)} value={search}/>
             <button className="w-50" title="Create group"><MdAdd></MdAdd></button>
            </div>
                 <Users users={users} />

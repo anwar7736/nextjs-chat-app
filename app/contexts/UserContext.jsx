@@ -1,6 +1,5 @@
 "use client";
-import { createContext, useEffect, useState } from "react";
-import { restaurant_auth, user_auth } from "../helpers/helper";
+import { createContext, useState } from "react";
 export const UserContext = createContext();
 const UserContextProvider = ({children}) => {
   const [user, setUser] = useState('');
