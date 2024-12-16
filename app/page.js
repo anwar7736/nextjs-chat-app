@@ -6,11 +6,23 @@ import { FaVideo } from "react-icons/fa";
 import { MdAddIcCall } from "react-icons/md";
 import { UserContext } from './contexts/UserContext';
 import { MessageContext } from './contexts/MessageContext';
-
+import { io } from 'socket.io-client';
+let socket = io("http://localhost:3001");
 const Home = () => {
   const { user, setUser } = useContext(UserContext);
   const { messages, setMessages } = useContext(MessageContext);
   const [message, setMessage] = useState('');
+  useEffect(()=>{
+    socket.on("connect", () => {
+      socket.on('server-message', (data) => {
+        console.log(data);
+      });
+      socket.emit('client-message', 'Message send from client');
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   return (
     <div className="px-7 h-screen overflow-hidden flex items-center justify-center bg-[#edf2f7]">
       <div className="flex h-screen overflow-hidden w-full ">
