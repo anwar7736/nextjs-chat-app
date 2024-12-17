@@ -1,11 +1,11 @@
 
-import { useContext, useState } from 'react';
-import { UserContext } from '../contexts/UserContext';
+import { useContext, useEffect, useState } from 'react';
+import { UserContext, useUserContext } from '../contexts/UserContext';
 import { MessageContext } from '../contexts/MessageContext';
 import { auth } from '../helpers/helper';
 const Users = ({ users }) => {
   const [selectedUser, setSelectedUser] = useState('');
-  const {user, setUser} = useContext(UserContext);
+  const {user, setUser} = useUserContext()
   const {messages, setMessages} = useContext(MessageContext);
   const getMessages = async (user) => {
       setSelectedUser(user?._id);
@@ -19,6 +19,7 @@ const Users = ({ users }) => {
       }
       
   }
+  
   return (
     <div>
       {

@@ -4,14 +4,14 @@ import Messages from './components/Messages';
 import Sidebar from './components/Sidebar'
 import { FaVideo } from "react-icons/fa";
 import { MdAddIcCall } from "react-icons/md";
-import { UserContext } from './contexts/UserContext';
+import { UserContext, useUserContext } from './contexts/UserContext';
 import { MessageContext } from './contexts/MessageContext';
 import { io } from 'socket.io-client';
 import { auth } from './helpers/helper';
 let socket = io("http://localhost:3001");
 const Home = () => {
   const [users, setUsers] = useState([]);
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser } = useUserContext()
   const { messages, setMessages } = useContext(MessageContext);
   const [message, setMessage] = useState('');
   const [search, setSearch] = useState('');
@@ -49,24 +49,25 @@ const Home = () => {
       ]
   }));
     setMessage('');
+    loadRealTimeMessages();
 
   }
 
   const loadRealTimeMessages = () =>{
     socket.on('receive-message', (data) => {
+      console.log(user)
       data = JSON.parse(data);
       if( (data.sender[0]._id == authUser._id && data.receiver[0]._id == user._id) || (data.sender[0]._id == user._id && data.receiver[0]._id == authUser._id) )
         {
           setMessages( (prev) => [...prev, data]);
         }
-        else{
+        else if(data.receiver[0]._id == authUser._id){
           getUserList();
        }
     });
   }
-  useEffect(() => {
-   loadRealTimeMessages();
-  }, []);
+  
+
   return (
     <div className="px-7 h-screen overflow-hidden flex items-center justify-center bg-[#edf2f7]">
       <div className="flex h-screen overflow-hidden w-full ">

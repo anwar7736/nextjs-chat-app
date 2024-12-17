@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import UserContextProvider from "./contexts/UserContext";
+import UserContextProvider, { UserWrapper } from "./contexts/UserContext";
 import MessageContextProvider from "./contexts/MessageContext";
 
 const geistSans = Geist({
@@ -26,12 +26,12 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-          <UserContextProvider>
+          <UserWrapper>
             <MessageContextProvider>
               {children}
               <ToastContainer />
             </MessageContextProvider>
-          </UserContextProvider>
+          </UserWrapper>
       </body>
     </html>
   );
