@@ -4,8 +4,8 @@ const Messages = ({ messages }) => {
     return (
         <div className="h-screen overflow-y-auto p-4 pb-40">
             {
-                messages?.map(message => {
-                    return <div key={message?._id}>
+                messages?.map( (message, index) => {
+                    return <div key={index}>
                         {
                             message?.sender[0]?._id == auth()?._id
                                 ?

@@ -6,7 +6,7 @@ import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { MdAdd } from 'react-icons/md';
 
-const Sidebar = ({users, search, setSearch}) => {
+const Sidebar = ({users, search, setSearch, activeUsers}) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const router = useRouter();
     const [user, setUser] = useState('');
@@ -44,10 +44,10 @@ const Sidebar = ({users, search, setSearch}) => {
 
             <div className="overflow-y-auto h-screen p-3 mb-9 pb-20">
            <div className="flex justify-between">
-            <input type="text" className="w-50 p-1 rounded-md border border-green-400 focus:outline-none focus:border-blue-500 mb-3" placeholder="Search user..." onChange={(e) => setSearch(e.target.value)} value={search}/>
-            <button className="w-50" title="Create group"><MdAdd></MdAdd></button>
+            <input type="text" className="w-full p-1 rounded-md border border-green-400 focus:outline-none focus:border-blue-500 mb-3" placeholder="Search user..." onChange={(e) => setSearch(e.target.value)} value={search}/>
+            <button className="w-50 hidden" title="Create group"><MdAdd></MdAdd></button>
            </div>
-                <Users users={users} />
+                <Users users={users} activeUsers={activeUsers}/>
             </div>
         </div>
 

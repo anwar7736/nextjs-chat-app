@@ -1,23 +1,13 @@
-"use client"
-
-
-import { createContext, useContext, useState } from "react"
-
-export const UserContext = createContext()
-
-export function UserWrapper({ children }) {
-  const [user, setUser] = useState("")
-  
-
-  const sharedState = {
-    user, setUser
-  }
-
+"use client";
+import { createContext, useState } from "react";
+export const UserContext = createContext();
+const UserContextProvider = ({children}) => {
+  const [user, setUser] = useState('');
   return (
-    <UserContext.Provider value={sharedState}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{user, setUser}} >
+        {children}
+    </UserContext.Provider>
   )
 }
 
-export function useUserContext() {
-  return useContext(UserContext)
-}
+export default UserContextProvider

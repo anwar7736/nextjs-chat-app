@@ -4,84 +4,123 @@ import Messages from './components/Messages';
 import Sidebar from './components/Sidebar'
 import { FaVideo } from "react-icons/fa";
 import { MdAddIcCall } from "react-icons/md";
-import { UserContext, useUserContext } from './contexts/UserContext';
+import { UserContext } from './contexts/UserContext';
 import { MessageContext } from './contexts/MessageContext';
 import { io } from 'socket.io-client';
-import { auth } from './helpers/helper';
+import { auth, mongoDB_connect } from './helpers/helper';
 let socket = io("http://localhost:3001");
 const Home = () => {
   const [users, setUsers] = useState([]);
-  const { user, setUser } = useUserContext()
+  const [activeUsers, setActiveUsers] = useState([]);
+  const { user, setUser } = useContext(UserContext)
   const { messages, setMessages } = useContext(MessageContext);
   const [message, setMessage] = useState('');
   const [search, setSearch] = useState('');
   const authUser = auth();
   const getUserList = async () => {
     let res = await fetch(`/api/v1/users?auth_id=${auth()?._id}&search=${search}`);
-        res = await res.json();
-    if(res.success)
-    {
+    res = await res.json();
+    if (res.success) {
       setUsers(res.data);
     }
   }
+
   useEffect(() => {
     getUserList();
   }, [search]);
 
-  const sendMessage = (e) => {
+  useEffect(() => {
+    socket.emit('register-user', authUser._id);
+  }, [authUser._id]);
+
+  const sendMessage = async (e) => {
     e.preventDefault();
-    socket.emit('send-message', JSON.stringify({
-      "_id": Math.random(),
-      "message": message,
-      "is_read": 0,
-      "createdAt": "2024-12-15T18:34:25.132Z",
-      "sender": [
-          {
-              "_id": "6748ab6ffad330340f42406b",
-              "name": "Md Anwar Hossain"
-          }
-      ],
-      "receiver": [
-          {
-              "_id": "67489fcee086d443b3434dc8",
-              "name": "Test User"
-          }
-      ]
-  }));
+    const data = { "message": message, "sender_id": authUser._id, "receiver_id": user._id };
     setMessage('');
-    loadRealTimeMessages();
-
-  }
-
-  const loadRealTimeMessages = () =>{
-    socket.on('receive-message', (data) => {
-      console.log(user)
-      data = JSON.parse(data);
-      if( (data.sender[0]._id == authUser._id && data.receiver[0]._id == user._id) || (data.sender[0]._id == user._id && data.receiver[0]._id == authUser._id) )
-        {
-          setMessages( (prev) => [...prev, data]);
-        }
-        else if(data.receiver[0]._id == authUser._id){
-          getUserList();
-       }
+    let res = await fetch("api/v1/messages", {
+      method: "POST",
+      body: JSON.stringify(data)
     });
+    res = await res.json();
+    if (res.success) {
+      socket.emit('private-message', JSON.stringify({
+        "_id": res?._id,
+        "message": data?.message,
+        "createdAt": res?.createdAt,
+        "sender": [
+          {
+            "_id": authUser._id,
+            "name": authUser.name
+          }
+        ],
+        "receiver": [
+          {
+            "_id": user._id,
+            "name": user.name
+          }
+        ]
+      }));
+    }
+    // loadRealTimeMessages();
+
   }
-  
+
+  const loadRealTimeMessages = () => {
+    // Remove any previous listeners to avoid duplicates
+    socket.off('private-message');
+    // Attach a new listener
+    socket.on('private-message', async (data) => {
+      if (
+        (data.sender[0]._id === authUser._id && data.receiver[0]._id === user._id) ||
+        (data.sender[0]._id === user._id && data.receiver[0]._id === authUser._id)
+      ) {
+        setMessages((prev) => [...prev, data]);
+        if (data.receiver[0]._id === authUser._id) {
+          let res = await fetch("api/v1/messages", {
+            method: "PUT",
+            body: JSON.stringify({sender_id:user._id, receiver_id:authUser._id})
+          });
+          res = await res.json();
+        }
+
+      } else if (data.receiver[0]._id === authUser._id) {
+        getUserList();
+      }
+    });
+  };
+
+  const loadActiveUsers = () => {
+    // Remove any previous listeners to avoid duplicates
+    socket.off('active-users');
+    // Attach a new listener
+    socket.on('active-users', (data) => {
+      setActiveUsers(data);
+
+    });
+  };
+
+
+  useEffect(() => {
+    loadRealTimeMessages();
+    loadActiveUsers();
+  }, [user, authUser]);
 
   return (
     <div className="px-7 h-screen overflow-hidden flex items-center justify-center bg-[#edf2f7]">
       <div className="flex h-screen overflow-hidden w-full ">
-        <Sidebar users={users} setSearch={setSearch} search={search}/>
+        <Sidebar users={users} setSearch={setSearch} search={search} activeUsers={activeUsers} />
         <div className="w-3/4">
           {
             user && (
               <header className="bg-white p-4 text-gray-700 flex justify-between">
                 <div className="text-xl font-semibold cursor-pointer">
                   <span className="ml-1">{user?.name}</span>
-                  <sup className="p-1 bg-green-500 ml-1 rounded" style={{ fontSize: '0px' }}></sup>
+                  {
+                    activeUsers.includes(user?._id) && (<sup className="p-1 bg-green-500 ml-1 rounded" style={{ fontSize: '0px' }}></sup>)
+                  }
                 </div>
                 <div className="flex justify-end px-2">
-                  <div className="px-3 cursor-pointer">
+                  <div className="px-3 cursor-pointer hidden">
                     <MdAddIcCall title="voice call" />
                   </div>
                   <div className="px-3 cursor-pointer">
