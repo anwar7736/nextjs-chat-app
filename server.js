@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
       socket.on('register-user', (userId) => {
           users[userId] = socket.id; // Map userId to the socket ID
           console.log('User registered:', userId, socket.id);
-          socket.emit('active-users', Object.keys(users));
+          socket.broadcast.emit('active-users', Object.keys(users));
       });
   
       // Handle private messaging
@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
           for (const userId in users) {
               if (users[userId] === socket.id) {
                   delete users[userId]; // Remove disconnected user
-                  socket.emit('active-users', Object.keys(users));
+                  socket.broadcast.emit('active-users', Object.keys(users));
                   break;
               }
           }
