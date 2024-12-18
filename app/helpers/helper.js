@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 import { getCookie, hasCookie } from "cookies-next";
 import { connectionStr } from "../lib/db";
+import { io } from "socket.io-client";
 
 export const mongoDB_connect = async () => 
 {
@@ -44,4 +45,9 @@ export const dateTimeFormat = (date) =>
           });
     }
     else return "";
+}
+
+export const socket_connection = () => {
+    let socket = io("http://localhost:3001");
+    return socket;
 }

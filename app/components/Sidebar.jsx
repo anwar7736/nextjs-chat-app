@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import Users from './Users'
 import { IoMdArrowDropdown } from "react-icons/io";
-import { auth } from '../helpers/helper';
+import { auth, socket_connection } from '../helpers/helper';
 import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { MdAdd } from 'react-icons/md';
+let socket = socket_connection();
 
 const Sidebar = ({users, search, setSearch, activeUsers}) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -15,6 +16,7 @@ const Sidebar = ({users, search, setSearch, activeUsers}) => {
         setIsDropdownOpen(!isDropdownOpen);
     };
     const logout = () => {
+        socket.emit("user-logout", auth()?._id);
         deleteCookie('auth');
         router.push('/auth');
     }

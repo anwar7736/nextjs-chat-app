@@ -6,9 +6,8 @@ import { FaVideo } from "react-icons/fa";
 import { MdAddIcCall } from "react-icons/md";
 import { UserContext } from './contexts/UserContext';
 import { MessageContext } from './contexts/MessageContext';
-import { io } from 'socket.io-client';
-import { auth, mongoDB_connect } from './helpers/helper';
-let socket = io("http://localhost:3001");
+import { auth, socket_connection } from './helpers/helper';
+let socket = socket_connection();
 const Home = () => {
   const [users, setUsers] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
@@ -31,7 +30,7 @@ const Home = () => {
 
   useEffect(() => {
     socket.emit('register-user', authUser._id);
-  }, [authUser._id]);
+  }, []);
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -90,12 +89,15 @@ const Home = () => {
   };
 
   const loadActiveUsers = () => {
-    // Remove any previous listeners to avoid duplicates
     socket.off('active-users');
-    // Attach a new listener
     socket.on('active-users', (data) => {
       setActiveUsers(data);
 
+    });
+
+    socket.off('new-user');
+    socket.on('new-user', (data) => {
+      getUserList();
     });
   };
 

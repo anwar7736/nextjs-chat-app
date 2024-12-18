@@ -25,7 +25,6 @@ const Login = () => {
         });
 
         res = await res.json();
-        console.log(res)
         if(res.success)
         {
             delete res.data.password;

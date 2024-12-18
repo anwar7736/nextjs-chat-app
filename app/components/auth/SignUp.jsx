@@ -3,6 +3,8 @@ import { useRouter } from 'next/navigation'
 import ValidationError from "../ValidationError";
 import { toast } from "react-toastify";
 import { setCookie } from "cookies-next";
+import { socket_connection } from "@/app/helpers/helper";
+let socket = socket_connection();
 const SignUp = () => {
   const router = useRouter();
   const {
@@ -22,7 +24,8 @@ const SignUp = () => {
     res = await res.json();
     if(res.success)
     {
-        delete res.data.password;
+      delete res.data.password;
+      socket.emit("new-user", JSON.stringify(res.data));
         setCookie('auth', JSON.stringify(res.data));
         let redirectUrl = "/";
         router.push(redirectUrl);

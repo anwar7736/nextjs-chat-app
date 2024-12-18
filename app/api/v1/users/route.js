@@ -33,12 +33,18 @@ export async function GET(request) {
                         $filter: {
                             input: "$messages",
                             as: "message",
-                            cond: {$eq: ["$$message.is_read", 0]}
+                            cond: {
+                                $and: [
+                                    { $eq: ["$$message.is_read", 0] },
+                                    { $eq: ["$$message.receiver_id", new mongoose.Types.ObjectId(auth_id)] }
+                                ]
+                            }
                         }
                     }
                 }
             }
         },
+        
         {
             $sort: { pending: -1 }
         },

@@ -9,19 +9,21 @@ const io = new Server(server,{
     }
 });
 
-app.get('/', (req, res) => {
-    res.send("OK");
-  });
-  
-  const users = {}; // To store socket IDs mapped to user IDs
+  const users = {};
 
   io.on('connection', (socket) => {
-      console.log('A new user connected!', socket.id);
-  
-      // Store user and their socket ID when they connect
       socket.on('register-user', (userId) => {
-          users[userId] = socket.id; // Map userId to the socket ID
-          console.log('User registered:', userId, socket.id);
+          users[userId] = socket.id;
+          socket.emit('active-users', Object.keys(users));
+          socket.broadcast.emit('active-users', Object.keys(users));
+      });
+
+      socket.on('new-user', (data) => {
+          socket.broadcast.emit('new-user', data);
+      });
+
+      socket.on('user-logout', (userId) => {
+          delete users[userId];
           socket.broadcast.emit('active-users', Object.keys(users));
       });
   
@@ -36,13 +38,14 @@ app.get('/', (req, res) => {
           // Send message to the receiver
           io.to(users[receiverId]).emit('private-message', parsedData);
       });
+
+
   
       // Handle disconnect
       socket.on('disconnect', () => {
-          console.log('A user disconnected:', socket.id);
           for (const userId in users) {
               if (users[userId] === socket.id) {
-                  delete users[userId]; // Remove disconnected user
+                  delete users[userId];
                   socket.broadcast.emit('active-users', Object.keys(users));
                   break;
               }
@@ -51,6 +54,4 @@ app.get('/', (req, res) => {
   });
   
 
-server.listen(3001, () => {
-    console.log("Server running at http://localhost:3001");
-});
+server.listen(3001);
