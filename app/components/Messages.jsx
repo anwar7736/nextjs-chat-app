@@ -1,11 +1,21 @@
+import { useEffect, useRef } from "react";
 import { auth, dateTimeFormat } from "../helpers/helper"
-
 const Messages = ({ messages }) => {
+    const elementRef = useRef(null);
+    useEffect(() => {
+        if (elementRef.current) {
+            elementRef.current.scrollTo({
+                top: elementRef.current.scrollHeight,
+                behavior: 'smooth',
+            });
+        }
+
+    }, [messages]);
     return (
-        <div className="h-screen overflow-y-auto p-4 pb-40">
+        <div className="h-screen overflow-y-auto p-4 pb-40" id="root" ref={elementRef}>
             {
-                messages?.map( (message, index) => {
-                    return <div key={index}>
+                messages?.map(message => {
+                    return <div key={message?._id}>
                         {
                             message?.sender[0]?._id == auth()?._id
                                 ?

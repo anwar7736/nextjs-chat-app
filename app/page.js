@@ -43,9 +43,9 @@ const Home = () => {
     res = await res.json();
     if (res.success) {
       socket.emit('private-message', JSON.stringify({
-        "_id": res?._id,
+        "_id": res?.data?._id,
         "message": data?.message,
-        "createdAt": res?.createdAt,
+        "createdAt": res?.data?.createdAt,
         "sender": [
           {
             "_id": authUser._id,
