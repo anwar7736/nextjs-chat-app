@@ -27,21 +27,14 @@ const io = new Server(server,{
           socket.broadcast.emit('active-users', Object.keys(users));
       });
   
-      // Handle private messaging
       socket.on('private-message', (data) => {
           const parsedData = JSON.parse(data);
           const receiverId = parsedData.receiver[0]._id;
   
-          // Send message back to the sender
           socket.emit('private-message', parsedData);
-  
-          // Send message to the receiver
           io.to(users[receiverId]).emit('private-message', parsedData);
       });
 
-
-  
-      // Handle disconnect
       socket.on('disconnect', () => {
           for (const userId in users) {
               if (users[userId] === socket.id) {
