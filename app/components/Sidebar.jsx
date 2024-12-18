@@ -5,7 +5,12 @@ import { auth, socket_connection } from '../helpers/helper';
 import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { MdAdd } from 'react-icons/md';
+<<<<<<< HEAD
 let socket = socket_connection();
+=======
+import { io } from 'socket.io-client';
+let socket = io("http://localhost:3001");
+>>>>>>> a7055b6c81906284138ca5bf679f8bf65e8a427c
 
 const Sidebar = ({users, search, setSearch, activeUsers}) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -18,6 +23,7 @@ const Sidebar = ({users, search, setSearch, activeUsers}) => {
     const logout = () => {
         socket.emit("user-logout", auth()?._id);
         deleteCookie('auth');
+        socket.disconnect();
         router.push('/auth');
     }
     useEffect(()=>{
