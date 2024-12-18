@@ -7,7 +7,7 @@ import { MdAddIcCall } from "react-icons/md";
 import { UserContext } from './contexts/UserContext';
 import { MessageContext } from './contexts/MessageContext';
 import { io } from 'socket.io-client';
-import { auth, mongoDB_connect } from './helpers/helper';
+import { auth } from './helpers/helper';
 let socket = io("http://localhost:3001");
 const Home = () => {
   const [users, setUsers] = useState([]);
@@ -31,7 +31,7 @@ const Home = () => {
 
   useEffect(() => {
     socket.emit('register-user', authUser._id);
-  }, [authUser._id]);
+  }, []);
 
   const sendMessage = async (e) => {
     e.preventDefault();
