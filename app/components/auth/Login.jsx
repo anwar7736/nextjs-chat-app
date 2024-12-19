@@ -17,11 +17,13 @@ const Login = () => {
         }
       });
     const loginFormHandler = async (data) => {
-        data.login = true;
-
+        let formData = new FormData();
+        formData.append('phone', data.phone);
+        formData.append('password', data.password);
+        formData.append('login', 1);
         let res = await fetch("api/v1/user", {
             method: "POST",
-            body: JSON.stringify(data)
+            body: formData
         });
 
         res = await res.json();

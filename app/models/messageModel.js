@@ -4,7 +4,7 @@ const messageModel = new mongoose.Schema({
     "sender_id": mongoose.Schema.Types.ObjectId,
     "receiver_id": mongoose.Schema.Types.ObjectId,
     "message":String,
-    "is_read": {type: Number, default: 0 },
+    "status": {type: Number, default: 0 }, // 0=>pending, 1=>seen, 2=>unseen, 
 }, {
     timestamps: true
 });

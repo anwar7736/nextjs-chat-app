@@ -4,7 +4,8 @@ const userModel = new mongoose.Schema({
     "name":String,
     "phone":String,
     "password":String,
-    "address":String
+    "address":String,
+    "photo":String
 });
 
 export const userSchema = mongoose.models.users ||

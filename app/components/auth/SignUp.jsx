@@ -4,6 +4,7 @@ import ValidationError from "../ValidationError";
 import { toast } from "react-toastify";
 import { setCookie } from "cookies-next";
 import { socket_connection } from "@/app/helpers/helper";
+import { useState } from "react";
 let socket = socket_connection();
 const SignUp = () => {
   const router = useRouter();
@@ -15,10 +16,16 @@ const SignUp = () => {
   } = useForm();
 
   const signupFormHandler = async (data) => {
-    data.login = false;
+    let formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('phone', data.phone);
+    formData.append('address', data.address);
+    formData.append('password', data.password);
+    formData.append('photo', data.photo[0]);
+    formData.append('login', 0);
     let res = await fetch("api/v1/user", {
         method: "POST",
-        body: JSON.stringify(data)
+        body: formData
     });
 
     res = await res.json();
@@ -86,6 +93,12 @@ const SignUp = () => {
               Re-type Password
             </label>
             <input className="shadow appearance-none border border-green-300 rounded w-full py-2 px-3 text-gray-700 mb-1 leading-tight focus:outline-none focus:shadow-outline" id="cpassword" type="password" placeholder="******************" {...register("cpassword", {required:'This field is required.'})}/>
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2 text-start" htmlFor="photo">
+              Profile Photo
+            </label>
+            <input className="shadow appearance-none border border-green-300 rounded w-full py-2 px-3 text-gray-700 mb-1 leading-tight focus:outline-none focus:shadow-outline" id="photo" type="file" placeholder="******************" {...register("photo")}/>
           </div>
           <div className="flex items-center justify-between">
             <button className="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">

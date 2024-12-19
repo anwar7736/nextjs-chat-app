@@ -15,7 +15,7 @@ export async function GET(request) {
       sender_id: user_id,
       receiver_id: auth_id,
     },
-    { $set: { is_read: 1 } }
+    { $set: { status: 1 } } //seen
   );
 
 
@@ -54,7 +54,7 @@ export async function GET(request) {
       $project: {
         _id: 1,
         message: 1,
-        is_read: 1,
+        status: 1,
         createdAt: 1,
         "sender._id": 1,
         "sender.name": 1,
@@ -89,7 +89,7 @@ export async function PUT(request) {
   request = await request.json();
   let success = false;
   let data = [];
-  let res = await messageSchema.updateMany(request, { $set: { is_read: 1 } });
+  let res = await messageSchema.updateMany(request, { $set: { status: 1 } }); //seen
   if(res)
   {
     success = true;
